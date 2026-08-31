@@ -3,26 +3,47 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>启动动画</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            overscroll-behavior: none;
+        }
+
         body {
-            width: 100vw; height: 100vh; height: 100dvh;
-            overflow: hidden; cursor: default; user-select: none;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            cursor: default;
+            user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
+            -webkit-touch-callout: none;
             background:
-                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px),
-                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.05) 2px, rgba(0, 0, 0, 0.05) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0, 0, 0, 0.04) 2px, rgba(0, 0, 0, 0.04) 4px),
                 radial-gradient(ellipse at 30% 40%, #3a3a3a 0%, #2a2a2a 40%, #1a1a1a 70%, #111 100%);
             background-color: #222;
         }
 
         body::before {
-            content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
             background: url("data:image/svg+xml,%3Csvg width='6' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='1' height='1' x='0' y='0' fill='rgba(255,255,255,0.02)'/%3E%3Crect width='1' height='1' x='3' y='3' fill='rgba(0,0,0,0.06)'/%3E%3C/svg%3E") repeat;
         }
 
@@ -30,82 +51,149 @@
         body.bug-state {
             background: #fff !important;
         }
+
         body.bug-state::before {
             display: none !important;
         }
 
         #hint {
-            position: fixed; bottom: max(40px, env(safe-area-inset-bottom));
-            left: 50%; transform: translateX(-50%);
-            color: rgba(255,255,255,0.3); font-family: 'Georgia', serif; 
+            position: fixed;
+            bottom: max(40px, env(safe-area-inset-bottom));
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.3);
+            font-family: 'Georgia', serif;
             font-size: clamp(12px, 3vmin, 14px);
-            letter-spacing: 2px; transition: opacity 0.8s; z-index: 100;
+            letter-spacing: 2px;
+            transition: opacity 0.8s;
+            z-index: 100;
             white-space: nowrap;
         }
 
-        #candles { position: fixed; inset: 0; z-index: 10; pointer-events: none; }
-        .candle-wrapper { 
-            position: absolute; display: flex; justify-content: center; align-items: flex-end; 
+        #candles {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            pointer-events: none;
         }
-        
-        .candle-wrapper:nth-child(1) { top: calc(50% - 12vmin); left: calc(50% - 22vmin); }
-        .candle-wrapper:nth-child(2) { top: calc(50% - 12vmin); left: calc(50% + 22vmin); }
-        .candle-wrapper:nth-child(3) { top: calc(50% + 18vmin); left: 50%; }
+
+        .candle-wrapper {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .candle-wrapper:nth-child(1) {
+            top: calc(50% - 12vmin);
+            left: calc(50% - 22vmin);
+        }
+
+        .candle-wrapper:nth-child(2) {
+            top: calc(50% - 12vmin);
+            left: calc(50% + 22vmin);
+        }
+
+        .candle-wrapper:nth-child(3) {
+            top: calc(50% + 18vmin);
+            left: 50%;
+        }
 
         .candle {
-            position: absolute; 
-            width: clamp(10px, 2vmin, 14px); 
+            position: absolute;
+            width: clamp(10px, 2vmin, 14px);
             height: clamp(40px, 9vmin, 60px);
             background: linear-gradient(90deg, #d8d0c4 0%, #f5f0e8 25%, #fff 50%, #f0ebe0 75%, #cdc5b8 100%);
-            border-radius: 2px; z-index: 2; cursor: pointer; opacity: 0;
+            border-radius: 2px;
+            z-index: 2;
+            cursor: pointer;
+            opacity: 0;
             transform: translateY(-30px);
             transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
         }
-        .candle.visible { opacity: 1; transform: translateY(0); }
+
+        .candle.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .candle.lit {
-            background: linear-gradient(180deg, rgba(255,210,140,0.5) 0%, rgba(255,190,100,0.2) 20%, transparent 45%),
+            background: linear-gradient(180deg, rgba(255, 210, 140, 0.5) 0%, rgba(255, 190, 100, 0.2) 20%, transparent 45%),
                 linear-gradient(90deg, #d8d0c4 0%, #f5f0e8 25%, #fff 50%, #f0ebe0 75%, #cdc5b8 100%);
         }
 
         .wick {
-            position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
-            width: 2px; height: 8px; background: linear-gradient(to top, #444, #111);
-            border-radius: 1px; transition: background 0.3s;
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 8px;
+            background: linear-gradient(to top, #444, #111);
+            border-radius: 1px;
+            transition: background 0.3s;
         }
-        .candle.lit .wick { background: linear-gradient(to top, #cc4400, #333, #111); }
+
+        .candle.lit .wick {
+            background: linear-gradient(to top, #cc4400, #333, #111);
+        }
 
         .flame {
-            position: absolute; left: 50%; z-index: 3; pointer-events: none;
-            --fw: clamp(8px, 1.5vmin, 10px); 
-            --fh: clamp(14px, 2.8vmin, 18px); 
+            position: absolute;
+            left: 50%;
+            z-index: 3;
+            pointer-events: none;
+            --fw: clamp(8px, 1.5vmin, 10px);
+            --fh: clamp(14px, 2.8vmin, 18px);
             --ft: calc(var(--fh) * -1.5);
-            --blur-outer: 1.2px; --bright-outer: 1.3;
-            --blur-inner: 0.6px; --bright-inner: 1.4;
-            --glow-spread: 4px; --glow-alpha: 0.6;
-            width: var(--fw); height: var(--fh); top: var(--ft);
-            transform: translateX(-50%) scale(0); opacity: 0;
-            filter: drop-shadow(0 0 var(--glow-spread) rgba(255,160,50,var(--glow-alpha)));
-            transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+            --blur-outer: 1.2px;
+            --bright-outer: 1.3;
+            --blur-inner: 0.6px;
+            --bright-inner: 1.4;
+            --glow-spread: 4px;
+            --glow-alpha: 0.6;
+            width: var(--fw);
+            height: var(--fh);
+            top: var(--ft);
+            transform: translateX(-50%) scale(0);
+            opacity: 0;
+            filter: drop-shadow(0 0 var(--glow-spread) rgba(255, 160, 50, var(--glow-alpha)));
+            transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
         .flame::before {
-            content: ''; position: absolute; inset: 0;
+            content: '';
+            position: absolute;
+            inset: 0;
             background: radial-gradient(ellipse at 50% 90%, #ffdd55 0%, #ffaa22 35%, #ff5500 65%, transparent 100%);
             border-radius: 50% 50% 20% 20% / 60% 60% 40% 40%;
-            filter: blur(var(--blur-outer)) brightness(var(--bright-outer)); opacity: 0.95;
+            filter: blur(var(--blur-outer)) brightness(var(--bright-outer));
+            opacity: 0.95;
             animation: flameOuter 2s infinite ease-in-out alternate;
             animation-delay: var(--outer-delay, 0s);
         }
+
         .flame::after {
-            content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
-            width: calc(var(--fw) * 0.5); height: calc(var(--fh) * 0.55);
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(var(--fw) * 0.5);
+            height: calc(var(--fh) * 0.55);
             background: radial-gradient(ellipse at 50% 80%, #fff 0%, #cceeff 30%, #5599ff 70%, transparent 100%);
             border-radius: 50% 50% 30% 30% / 70% 70% 30% 30%;
-            filter: blur(var(--blur-inner)) brightness(var(--bright-inner)); opacity: 1;
+            filter: blur(var(--blur-inner)) brightness(var(--bright-inner));
+            opacity: 1;
             animation: flameInner 1.8s infinite ease-in-out alternate-reverse;
             animation-delay: var(--inner-delay, -0.3s);
         }
-        .candle.lit .flame { opacity: 1; transform: translateX(-50%) scale(1); }
+
+        .candle.lit .flame {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
 
         @keyframes flameOuter {
             0% { transform: scaleX(1) scaleY(1) skewX(0deg); }
@@ -114,6 +202,7 @@
             75% { transform: scaleX(0.96) scaleY(1.03) skewX(-0.5deg); }
             100% { transform: scaleX(1.02) scaleY(0.97) skewX(0.8deg); }
         }
+
         @keyframes flameInner {
             0% { transform: translateX(-50%) scaleY(1); }
             50% { transform: translateX(-50%) scaleY(0.85); }
@@ -121,111 +210,301 @@
         }
 
         .message {
-            position: fixed; left: 50%; bottom: -80px; transform: translateX(-50%);
-            font-family: 'Georgia', serif; 
-            font-size: clamp(16px, 5vmin, 24px); 
-            color: rgba(255,255,255,0.9);
-            text-shadow: 0 0 20px rgba(255,180,80,0.7), 0 0 60px rgba(255,120,0,0.3);
-            opacity: 0; transition: bottom 1s ease, opacity 0.8s ease;
-            z-index: 50; pointer-events: none; 
-            white-space: normal; 
+            position: fixed;
+            left: 50%;
+            bottom: -80px;
+            transform: translateX(-50%);
+            font-family: 'Georgia', serif;
+            font-size: clamp(16px, 5vmin, 24px);
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 20px rgba(255, 180, 80, 0.7), 0 0 60px rgba(255, 120, 0, 0.3);
+            opacity: 0;
+            transition: bottom 1s ease, opacity 0.8s ease;
+            z-index: 50;
+            pointer-events: none;
+            white-space: normal;
             text-align: center;
             width: 90vw;
             max-width: 600px;
             line-height: 1.5;
             padding: 0 10px;
         }
-        .message.show { bottom: max(120px, 20vh); opacity: 1; }
-        .message.hide { opacity: 0; bottom: max(160px, 25vh); }
+
+        .message.show {
+            bottom: max(120px, 20vh);
+            opacity: 1;
+        }
+
+        .message.hide {
+            opacity: 0;
+            bottom: max(160px, 25vh);
+        }
 
         #table-light {
-            position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0;
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0;
             transition: opacity 1.5s;
-            background: radial-gradient(ellipse at 50% 50%, rgba(255,170,80,0.07) 0%, transparent 60%);
+            background: radial-gradient(ellipse at 50% 50%, rgba(255, 170, 80, 0.07) 0%, transparent 60%);
         }
-        #table-light.on { opacity: 1; }
+
+        #table-light.on {
+            opacity: 1;
+        }
 
         /* --- 花屏效果样式 --- */
         #glitch-container {
-            position: fixed; inset: 0; z-index: 9999;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
             pointer-events: none;
             display: none;
         }
+
         .glitch-line {
-            position: absolute; left: 0; width: 100%;
+            position: absolute;
+            left: 0;
+            width: 100%;
             background-color: #000;
         }
 
-        /* --- 新增：阿蒙弹窗样式 --- */
+        /* --- 阿蒙弹窗样式 --- */
         .amon-overlay {
-            position: fixed; inset: 0;
+            position: fixed;
+            inset: 0;
             background: rgba(255, 255, 255, 0.95);
             z-index: 10000;
-            display: flex; justify-content: center; align-items: flex-start;
-            padding-top: 15vh;
-            opacity: 0; transition: opacity 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* ★ 改为居中对齐 + safe-area padding，替代原来的 padding-top: 15vh */
+            padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
+            opacity: 0;
+            transition: opacity 0.3s;
+            /* ★ 允许内容溢出时滚动 */
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
-        .amon-overlay.visible { opacity: 1; }
+
+        .amon-overlay.visible {
+            opacity: 1;
+        }
 
         .amon-modal {
             background: #fff;
             border: 2px solid #333;
-            padding: 30px 20px;
-            width: 85%; max-width: 400px;
+            /* ★ 增大内边距，手机上更舒适 */
+            padding: clamp(20px, 5vmin, 30px) clamp(16px, 4vmin, 20px);
+            width: 85%;
+            max-width: 400px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             transform: translateY(-50px);
             transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-family: system-ui, -apple-system, sans-serif;
+            /* ★ 防止弹窗超出屏幕 */
+            max-height: 80vh;
+            overflow-y: auto;
         }
-        .amon-overlay.visible .amon-modal { transform: translateY(0); }
+
+        .amon-overlay.visible .amon-modal {
+            transform: translateY(0);
+        }
 
         .amon-text {
-            font-size: 18px; color: #333; line-height: 1.6; margin-bottom: 20px;
+            /* ★ 响应式字号 */
+            font-size: clamp(16px, 4.5vmin, 18px);
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            word-break: break-word;
         }
+
         .amon-extra {
             display: inline-block;
-            opacity: 0; transform: scale(0.8);
+            opacity: 0;
+            transform: scale(0.8);
             transition: all 0.4s ease;
-            font-weight: bold; color: #000;
+            font-weight: bold;
+            color: #000;
         }
-        .amon-extra.show { opacity: 1; transform: scale(1); }
-        
+
+        .amon-extra.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
         .monocle-emoji {
-            font-size: 32px; vertical-align: middle; margin-left: 5px;
+            font-size: clamp(24px, 6vmin, 32px);
+            vertical-align: middle;
+            margin-left: 5px;
             display: inline-block;
         }
 
         .amon-btn {
-            background: #333; color: #fff; border: none;
-            padding: 10px 24px; font-size: 16px;
-            border-radius: 4px; cursor: pointer;
+            background: #333;
+            color: #fff;
+            border: none;
+            /* ★ 增大触摸区域 */
+            padding: 14px 32px;
+            font-size: clamp(15px, 4vmin, 16px);
+            border-radius: 8px;
+            cursor: pointer;
             margin-top: 10px;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.15s;
+            /* ★ 最小触摸尺寸 */
+            min-height: 48px;
+            min-width: 120px;
+            /* ★ 禁止双击缩放 */
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
-        .amon-btn:hover { background: #000; }
+
+        /* ★ 手机端用 :active 替代 :hover */
+        .amon-btn:hover,
+        .amon-btn:active {
+            background: #000;
+            transform: scale(0.97);
+        }
 
         /* 最终警告页面样式 */
         .final-warning {
-            position: fixed; inset: 0;
-            background: #fff; z-index: 10001;
-            display: flex; justify-content: center; align-items: center;
-            text-align: center; padding: 20px;
+            position: fixed;
+            inset: 0;
+            background: #fff;
+            z-index: 10001;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            /* ★ safe-area padding */
+            padding: max(20px, env(safe-area-inset-top)) 24px max(20px, env(safe-area-inset-bottom));
             font-family: monospace, sans-serif;
-            font-size: 20px; color: #d00; font-weight: bold;
-            opacity: 0; transition: opacity 0.5s;
+            /* ★ 响应式字号 */
+            font-size: clamp(16px, 5vmin, 20px);
+            color: #d00;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.5s;
+            word-break: break-word;
+            line-height: 1.6;
         }
-        .final-warning.visible { opacity: 1; }
+
+        .final-warning.visible {
+            opacity: 1;
+        }
+
+        /* --- 惊喜二维码页面样式 --- */
+        .surprise-container {
+            position: fixed;
+            inset: 0;
+            background: #fff;
+            z-index: 10002;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            /* ★ safe-area padding */
+            padding: max(20px, env(safe-area-inset-top)) 24px max(20px, env(safe-area-inset-bottom));
+            font-family: system-ui, -apple-system, sans-serif;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            /* ★ 小屏可滚动 */
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .surprise-container.visible {
+            opacity: 1;
+        }
+
+        .surprise-text {
+            font-size: clamp(16px, 4.5vmin, 24px);
+            color: #333;
+            margin-bottom: clamp(20px, 5vmin, 30px);
+            font-weight: 500;
+            line-height: 1.6;
+            word-break: break-word;
+        }
+
+        .qr-code-img {
+            /* ★ 更保守的尺寸，确保不超出屏幕 */
+            width: clamp(180px, 55vmin, 280px);
+            height: auto;
+            max-width: calc(100vw - 48px);
+            border: 1px solid #eee;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: clamp(20px, 5vmin, 30px);
+        }
+
+        .lazy-btn {
+            background: transparent;
+            color: #666;
+            border: 1px solid #ddd;
+            /* ★ 增大触摸区域 */
+            padding: 14px 30px;
+            font-size: clamp(14px, 3.5vmin, 16px);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            /* ★ 最小触摸尺寸 */
+            min-height: 48px;
+            /* ★ 禁止双击缩放 */
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* ★ 手机端用 :active 替代 :hover */
+        .lazy-btn:hover,
+        .lazy-btn:active {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+            transform: scale(0.97);
+        }
+
+        /* ★ 横屏适配 */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .amon-modal { padding: 15px; max-height: 85vh; }
+            .amon-text { font-size: 14px; margin-bottom: 12px; }
+            .amon-btn { padding: 10px 24px; min-height: 40px; }
+            .final-warning { font-size: 16px; }
+            .surprise-text { font-size: 14px; margin-bottom: 12px; }
+            .qr-code-img { width: clamp(120px, 35vh, 200px); margin-bottom: 12px; }
+            .lazy-btn { padding: 10px 24px; min-height: 40px; }
+        }
     </style>
 </head>
 
 <body>
     <div id="table-light"></div>
     <div id="candles">
-        <div class="candle-wrapper"><div class="candle" id="c1"><div class="wick"></div><div class="flame"></div></div></div>
-        <div class="candle-wrapper"><div class="candle" id="c2"><div class="wick"></div><div class="flame"></div></div></div>
-        <div class="candle-wrapper"><div class="candle" id="c3"><div class="wick"></div><div class="flame"></div></div></div>
+        <div class="candle-wrapper">
+            <div class="candle" id="c1">
+                <div class="wick"></div>
+                <div class="flame"></div>
+            </div>
+        </div>
+        <div class="candle-wrapper">
+            <div class="candle" id="c2">
+                <div class="wick"></div>
+                <div class="flame"></div>
+            </div>
+        </div>
+        <div class="candle-wrapper">
+            <div class="candle" id="c3">
+                <div class="wick"></div>
+                <div class="flame"></div>
+            </div>
+        </div>
     </div>
 
     <div class="message" id="msg1">不属于这个时代的愚者啊</div>
@@ -238,6 +517,104 @@
     <div id="glitch-container"></div>
 
     <script>
+        // ================= 1. Supabase 配置 =================
+        const SUPABASE_URL = 'https://plakgkehqlopwfrsceem.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYWtna2VocWxvcHdmcnNjZWVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1NzQyMzQsImV4cCI6MjA4MTE1MDIzNH0.HjlawMHv356F_NaxRagTYR7Q96UnCfAfFLie6XRk1Jg';
+        const TABLE_NAME = 'dont_click_me';
+        const API_URL = `${SUPABASE_URL}/rest/v1/${TABLE_NAME}`;
+
+        function generateDeviceId() {
+            if (crypto.randomUUID) return crypto.randomUUID();
+            return 'dev-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        }
+
+        async function supabaseRequest(method, body = null, prefer = '') {
+            const headers = {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`,
+                'Content-Type': 'application/json',
+            };
+            if (prefer) headers['Prefer'] = prefer;
+
+            const options = { method, headers };
+            if (body) options.body = JSON.stringify(body);
+
+            try {
+                const res = await fetch(API_URL, options);
+                if (!res.ok) {
+                    console.warn('Supabase 请求失败:', res.status, await res.text());
+                }
+                return res;
+            } catch (err) {
+                console.warn('Supabase 网络错误:', err);
+            }
+        }
+
+        async function updateDeviceTime(deviceId) {
+            const url = `${API_URL}?id=eq.${encodeURIComponent(deviceId)}`;
+            const headers = {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=headers-only,count=exact'
+            };
+            try {
+                const res = await fetch(url, {
+                    method: 'PATCH',
+                    headers,
+                    body: JSON.stringify({ time: new Date().toISOString() })
+                });
+                const contentRange = res.headers.get('content-range');
+                const count = contentRange ? parseInt(contentRange.split('/')[1]) : -1;
+                console.log(' PATCH 响应:', res.status, 'content-range:', contentRange, 'count:', count);
+                return { ok: res.ok, count };
+            } catch (err) {
+                console.warn('更新时间失败:', err);
+                return { ok: false, count: 0 };
+            }
+        }
+
+        async function initDeviceTrackingFinal() {
+            const STORAGE_KEY = 'dont_click_me_device_id';
+            let deviceId = localStorage.getItem(STORAGE_KEY);
+
+            if (deviceId) {
+                console.log('🔁 老设备 ID:', deviceId, '，正在更新访问时间...');
+                const result = await updateDeviceTime(deviceId);
+
+                if (!result.ok || result.count === 0) {
+                    console.warn('⚠️ 数据库中未找到该设备记录，重新注册...');
+                    localStorage.removeItem(STORAGE_KEY);
+                    deviceId = null;
+                } else {
+                    console.log('✅ 访问时间更新成功');
+                }
+            }
+
+            if (!deviceId) {
+                deviceId = generateDeviceId();
+                console.log('🆕 新设备 ID:', deviceId, '，正在注册...');
+
+                const res = await supabaseRequest('POST', {
+                    id: deviceId,
+                    ok: 0,
+                    bad: 0
+                }, 'return=minimal');
+
+                if (res && res.ok) {
+                    localStorage.setItem(STORAGE_KEY, deviceId);
+                    console.log('✅ 设备注册成功');
+                } else {
+                    console.error('❌ 设备注册失败，不保存本地 ID');
+                }
+            }
+        }
+
+        // ★ 修复：只调用一次（原来重复调用了两次）
+        initDeviceTrackingFinal();
+
+
+        // ================= 2. 原有的页面交互逻辑 =================
         let stage = 0;
         const candles = [document.getElementById('c1'), document.getElementById('c2'), document.getElementById('c3')];
         const msgs = [
@@ -253,14 +630,13 @@
 
         const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-        // 生成花屏线条
         function generateGlitchLines() {
             glitchContainer.innerHTML = '';
             for (let i = 1; i <= 6; i++) {
                 const line = document.createElement('div');
                 line.className = 'glitch-line';
                 const basePos = (i / 7) * 100;
-                const offset = (Math.random() - 0.5) * 5; 
+                const offset = (Math.random() - 0.5) * 5;
                 line.style.top = `${basePos + offset}%`;
                 line.style.height = `${Math.floor(Math.random() * 53) + 5}px`;
                 glitchContainer.appendChild(line);
@@ -302,95 +678,107 @@
             await sleep(100);
         }
 
-        // ★ 核心修改：阿蒙恶作剧流程
         async function triggerBugState() {
             stopGlitchLoop();
-            
-            // 1. 先全部变黑
+
             document.body.style.background = '#000';
             document.body.style.transition = 'none';
             const allElements = document.body.children;
             for (const el of allElements) {
                 el.style.display = 'none';
             }
-            
-            // 2. 在黑屏状态停留一会儿
+
             await sleep(400);
-            
-            // 3. 删除整个页面内容并重置样式
+
             document.body.innerHTML = '';
             document.body.className = 'bug-state';
-            document.body.style.background = ''; 
-            
-            // 4. 创建弹窗容器
+            document.body.style.background = '';
+
             const overlay = document.createElement('div');
             overlay.className = 'amon-overlay';
-            
+
             const modal = document.createElement('div');
             modal.className = 'amon-modal';
-            
-            // 初始文字
+
             const textP = document.createElement('p');
             textP.className = 'amon-text';
             textP.textContent = '你遇到了一个bug';
-            
-            // 后续追加的文字容器
+
             const extraSpan = document.createElement('span');
             extraSpan.className = 'amon-extra';
             extraSpan.innerHTML = '哦不，是阿蒙 <span class="monocle-emoji">🧐</span>';
             textP.appendChild(extraSpan);
-            
-            // 第二段文字（初始隐藏）
+
             const textP2 = document.createElement('p');
             textP2.className = 'amon-text';
             textP2.style.display = 'none';
             textP2.textContent = '你正在访问的网站被阿蒙偷走了，但他还给了你这个';
-            
-            // 按钮（初始隐藏）
+
             const btn = document.createElement('button');
             btn.className = 'amon-btn';
             btn.textContent = '查看';
             btn.style.display = 'none';
-            
+
             modal.appendChild(textP);
             modal.appendChild(textP2);
             modal.appendChild(btn);
             overlay.appendChild(modal);
             document.body.appendChild(overlay);
-            
-            // 强制重绘以触发动画
+
             void overlay.offsetWidth;
             overlay.classList.add('visible');
-            
-            // 5. 等待0.5秒后追加“阿蒙”内容
+
             await sleep(500);
             extraSpan.classList.add('show');
-            
-            // 6. 再等待一会显示第二段话和按钮
+
             await sleep(1200);
             textP2.style.display = 'block';
             btn.style.display = 'inline-block';
-            
-            // 7. 绑定按钮点击事件
-            btn.onclick = () => {
-                // 移除弹窗
+
+            btn.onclick = async () => {
                 overlay.remove();
-                
-                // 显示最终警告页
+
                 const warning = document.createElement('div');
                 warning.className = 'final-warning';
                 warning.textContent = '没有人告诉你陌生链接不要点击吗';
                 document.body.appendChild(warning);
-                
-                // 强制重绘
+
                 void warning.offsetWidth;
                 warning.classList.add('visible');
+
+                await sleep(2000);
+                warning.remove();
+
+                const surprise = document.createElement('div');
+                surprise.className = 'surprise-container';
+
+                const sText = document.createElement('div');
+                sText.className = 'surprise-text';
+                sText.textContent = '好啦，不骗你了，扫这个二维码，里面有惊喜';
+
+                const qrImg = document.createElement('img');
+                qrImg.className = 'qr-code-img';
+                qrImg.src = './ewm/ewm.png';
+                qrImg.alt = '惊喜二维码';
+
+                const lazyBtn = document.createElement('a');
+                lazyBtn.className = 'lazy-btn';
+                lazyBtn.href = 'https://yizhimoshushi.github.io/dont_click_me/ewm.html';
+                lazyBtn.textContent = '懒得扫的点我';
+
+                surprise.appendChild(sText);
+                surprise.appendChild(qrImg);
+                surprise.appendChild(lazyBtn);
+                document.body.appendChild(surprise);
+
+                void surprise.offsetWidth;
+                surprise.classList.add('visible');
             };
         }
 
         const handleInteraction = async (e) => {
-            if (e.type === 'touchend') e.preventDefault(); 
-            
+            if (e.type === 'touchend') e.preventDefault();
+
             stage++;
 
             if (stage === 1) {
@@ -423,13 +811,13 @@
 
                 await showMessage(msgs[0]);
                 await showMessage(msgs[1]);
-                
-                await showMessage(msgs[2]); 
-                
-                startGlitchLoop(2000); 
-                
+
+                await showMessage(msgs[2]);
+
+                startGlitchLoop(2000);
+
                 await sleep(500);
-                await showMessage(msgs[3]); 
+                await showMessage(msgs[3]);
 
                 startGlitchLoop(500);
 
@@ -437,7 +825,7 @@
 
                 await showMessage(msgs[4]);
 
-                startGlitchLoop(300); 
+                startGlitchLoop(300);
 
                 await sleep(1300);
 
@@ -447,6 +835,20 @@
 
         document.body.addEventListener('click', handleInteraction);
         document.body.addEventListener('touchend', handleInteraction, { passive: false });
+
+        // ★ 阻止移动端双击缩放
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, { passive: false });
+
+        // ★ 阻止 iOS 长按弹出菜单
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
     </script>
 </body>
+
 </html>
